@@ -2,6 +2,8 @@ import json
 
 from src.career_analyzer import CareerAnalyzer
 from src.behavior_analyzer import BehaviorAnalyzer
+from src.recruiter_decision import RecruiterDecisionEngine
+
 
 class ScoringEngine:
     def __init__(self):
@@ -9,6 +11,7 @@ class ScoringEngine:
         self.good_industries = ["software", "internet", "saas", "ai", "product"]
         self.career_analyzer = CareerAnalyzer()
         self.behavior_analyzer = BehaviorAnalyzer()
+        self.recruiter_decision = RecruiterDecisionEngine()
 
     def candidate_text(self, candidate):
         return json.dumps(candidate).lower()
@@ -60,37 +63,6 @@ class ScoringEngine:
 
         return max(0, min(score, 100))
 
-    def behavior_score(self, candidate):
-        signals = candidate.get("redrob_signals", {})
-        score = 0
-
-        score += signals.get("profile_completeness_score", 0) * 0.15
-        score += signals.get("recruiter_response_rate", 0) * 25
-        score += signals.get("interview_completion_rate", 0) * 20
-
-        if signals.get("open_to_work_flag"):
-            score += 10
-        if signals.get("verified_email"):
-            score += 5
-        if signals.get("verified_phone"):
-            score += 5
-        if signals.get("linkedin_connected"):
-            score += 5
-
-        notice = signals.get("notice_period_days", 90)
-        if notice <= 30:
-            score += 10
-        elif notice > 90:
-            score -= 10
-
-        github = signals.get("github_activity_score", -1)
-        if github >= 50:
-            score += 10
-        elif github >= 20:
-            score += 5
-
-        return max(0, min(score, 100))
-
     def risk_penalty(self, candidate):
         text = self.candidate_text(candidate)
         penalty = 0
@@ -129,14 +101,16 @@ class ScoringEngine:
         product = self.career_analyzer.product_company_score(candidate)
         exp = self.experience_score(candidate)
         behavior = self.behavior_analyzer.behavior_score(candidate)
+        decision = self.recruiter_decision.decision_score(candidate)
         risk = self.risk_penalty(candidate)
 
         final = (
-            0.25 * tech +
-            0.30 * career +
+            0.20 * tech +
+            0.25 * career +
             0.15 * exp +
-            0.20 * behavior +
-            0.10 * product -
+            0.15 * behavior +
+            0.10 * product +
+            0.15 * decision -
             risk
         )
 
