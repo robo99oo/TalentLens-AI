@@ -3,60 +3,74 @@ title: TalentLens AI - Intelligent Candidate Discovery & Ranking System
 ---
 
 ```mermaid
-flowchart TD
+flowchart TB
 
-    A[Job Description DOCX]
-    B[JD Parser]
-    C[JD Intelligence Engine]
-    D[Dynamic Weight Generator]
+subgraph INPUT["Input Layer"]
+A[📄 Job Description DOCX]
+B[👥 Candidate Knowledge Base<br/>100K Candidate Profiles]
+end
 
-    E[Candidate Knowledge Base<br/>100K Candidate Profiles]
-    F[Candidate Loader]
+subgraph JD["JD Intelligence Layer"]
+C[JD Parser]
+D[JD Intelligence Engine]
+E[Dynamic Weight Generator]
+end
 
-    AI[AI Intelligence Layer]
+subgraph DATA["Candidate Processing Layer"]
+F[Candidate Loader]
+end
 
-    G[Career Analyzer]
-    H[Behavior Analyzer]
-    I[Evidence Engine]
-    J[Recruiter Decision Engine]
+subgraph AI["AI Intelligence Layer"]
+G[Career Analyzer]
+H[Behavior Analyzer]
+I[Evidence Engine]
+J[Recruiter Decision Engine]
+end
 
-    K[Dynamic Scoring Engine]
-    L[Reasoning Engine]
-    M[Top 100 Ranked Candidates]
-    N[Top 100 Ranked Output CSV]
-    O[Challenge Submission Validator]
+subgraph SCORE["Decision Layer"]
+K[Dynamic Scoring Engine]
+L[Explainable Reasoning Engine]
+end
 
-    A --> B
-    B --> C
-    C --> D
+subgraph OUTPUT["Output Layer"]
+M[Top 100 Ranked Candidates]
+N[submission.csv]
+O[Challenge Submission Validator]
+end
 
-    E --> F
+A --> C
+C --> D
+D --> E
 
-    F --> AI
+B --> F
 
-    AI --> G
-    AI --> H
-    AI --> I
-    AI --> J
+F --> G
+F --> H
+F --> I
+F --> J
 
-    D --> K
-    G --> K
-    H --> K
-    I --> K
-    J --> K
+E --> K
+G --> K
+H --> K
+I --> K
+J --> K
 
-    K --> L
-    L --> M
-    M --> N
-    N --> O
+K --> L
+L --> M
+M --> N
+N --> O
 
-    classDef jd fill:#4F81BD,color:#fff,stroke:#2F5597;
-    classDef ai fill:#70AD47,color:#fff,stroke:#548235;
-    classDef scoring fill:#ED7D31,color:#fff,stroke:#C55A11;
-    classDef output fill:#C00000,color:#fff,stroke:#7F0000;
+classDef input fill:#4F81BD,color:#fff,stroke:#2F5597;
+classDef jd fill:#5B9BD5,color:#fff,stroke:#2F5597;
+classDef process fill:#A5A5A5,color:#fff,stroke:#666666;
+classDef ai fill:#70AD47,color:#fff,stroke:#548235;
+classDef score fill:#ED7D31,color:#fff,stroke:#C55A11;
+classDef output fill:#C00000,color:#fff,stroke:#7F0000;
 
-    class A,B,C,D jd;
-    class AI,G,H,I,J ai;
-    class K,L scoring;
-    class M,N,O output;
+class A,B input;
+class C,D,E jd;
+class F process;
+class G,H,I,J ai;
+class K,L score;
+class M,N,O output;
 ```
