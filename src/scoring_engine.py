@@ -1,13 +1,14 @@
 import json
 
 from src.career_analyzer import CareerAnalyzer
-
+from src.behavior_analyzer import BehaviorAnalyzer
 
 class ScoringEngine:
     def __init__(self):
         self.bad_industries = ["it services", "consulting"]
         self.good_industries = ["software", "internet", "saas", "ai", "product"]
         self.career_analyzer = CareerAnalyzer()
+        self.behavior_analyzer = BehaviorAnalyzer()
 
     def candidate_text(self, candidate):
         return json.dumps(candidate).lower()
@@ -127,7 +128,7 @@ class ScoringEngine:
         career = self.career_analyzer.career_score(candidate)
         product = self.career_analyzer.product_company_score(candidate)
         exp = self.experience_score(candidate)
-        behavior = self.behavior_score(candidate)
+        behavior = self.behavior_analyzer.behavior_score(candidate)
         risk = self.risk_penalty(candidate)
 
         final = (
