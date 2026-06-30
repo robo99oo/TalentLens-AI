@@ -4,6 +4,7 @@ from src.career_analyzer import CareerAnalyzer
 from src.behavior_analyzer import BehaviorAnalyzer
 from src.recruiter_decision import RecruiterDecisionEngine
 from src.jd_intelligence import JDIntelligence
+from src.evidence_engine import EvidenceEngine
 
 class ScoringEngine:
     def __init__(self):
@@ -13,6 +14,7 @@ class ScoringEngine:
         self.behavior_analyzer = BehaviorAnalyzer()
         self.recruiter_decision = RecruiterDecisionEngine()
         self.jd_intelligence = JDIntelligence()
+        self.evidence_engine = EvidenceEngine()
 
     def candidate_text(self, candidate):
         return json.dumps(candidate).lower()
@@ -105,6 +107,7 @@ class ScoringEngine:
         decision = self.recruiter_decision.decision_score(candidate)
         weights = self.jd_intelligence.build_weights(role_profile)
         risk = self.risk_penalty(candidate)
+        evidence = self.evidence_engine.evidence_score(candidate)
 
         final = (
                 weights["technical"] * tech +
@@ -112,8 +115,9 @@ class ScoringEngine:
                 weights["experience"] * exp +
                 weights["behavior"] * behavior +
                 weights["product"] * product +
-                weights["decision"] * decision -
+                weights["decision"] * decision +
+                0.10 * evidence -
                 risk
         )
-
+        
         return max(0, round(final, 4))
