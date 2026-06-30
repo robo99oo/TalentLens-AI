@@ -1,0 +1,17 @@
+# Virtual Environment
+.venv/
+
+# IDE
+.idea/
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# Large Dataset
+challenge_data/India_runs_data_and_ai_challenge/candidates.jsonl
+challenge_data/India_runs_data_and_ai_challenge/candidates.jsonl.gz
+
+# OS files
+.DS_Store
+Thumbs.db
