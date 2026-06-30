@@ -3,7 +3,7 @@ import json
 from src.career_analyzer import CareerAnalyzer
 from src.behavior_analyzer import BehaviorAnalyzer
 from src.recruiter_decision import RecruiterDecisionEngine
-
+from src.jd_intelligence import JDIntelligence
 
 class ScoringEngine:
     def __init__(self):
@@ -12,6 +12,7 @@ class ScoringEngine:
         self.career_analyzer = CareerAnalyzer()
         self.behavior_analyzer = BehaviorAnalyzer()
         self.recruiter_decision = RecruiterDecisionEngine()
+        self.jd_intelligence = JDIntelligence()
 
     def candidate_text(self, candidate):
         return json.dumps(candidate).lower()
@@ -102,16 +103,17 @@ class ScoringEngine:
         exp = self.experience_score(candidate)
         behavior = self.behavior_analyzer.behavior_score(candidate)
         decision = self.recruiter_decision.decision_score(candidate)
+        weights = self.jd_intelligence.build_weights(role_profile)
         risk = self.risk_penalty(candidate)
 
         final = (
-            0.20 * tech +
-            0.25 * career +
-            0.15 * exp +
-            0.15 * behavior +
-            0.10 * product +
-            0.15 * decision -
-            risk
+                weights["technical"] * tech +
+                weights["career"] * career +
+                weights["experience"] * exp +
+                weights["behavior"] * behavior +
+                weights["product"] * product +
+                weights["decision"] * decision -
+                risk
         )
 
         return max(0, round(final, 4))
